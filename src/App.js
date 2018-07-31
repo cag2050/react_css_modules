@@ -1,26 +1,22 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
-import CSSModules from 'react-css-modules'
 // import './App.css';
-import styles from './App.css'
-// import styles from './App.styl'
-import Button from 'antd/lib/button';
+import MyLayout from './components/MyLayout'
+import {withRouter} from 'react-router'
+// import DevTools from 'mobx-react-devtools'
+// import {Provider} from "mobx-react"
+// import stores from './store'
 
 class App extends Component {
     render() {
         return (
-            <div styleName="App">
-                <header styleName="App-header">
-                    <img src={logo} styleName="App-logo" alt="logo"/>
-                    <h1 styleName="App-title">Welcome to React</h1>
-                </header>
-                <p styleName="App-intro">
-                    To get started, edit <code>src/App.js</code> and save to reload.
-                </p>
-                <Button type="primary">Button</Button>
-            </div>
+            //<Provider {...stores}>
+                <div style={{height: '100%'}}>
+                    <MyLayout/>
+                    {/*<DevTools/>*/}
+                </div>
+            //</Provider>
         );
     }
 }
 
-export default CSSModules(App, styles);
+export default withRouter(App);
