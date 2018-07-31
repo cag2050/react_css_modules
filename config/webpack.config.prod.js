@@ -194,6 +194,7 @@ module.exports = {
                     // in the main CSS file.
                     {
                         test: /\.css$/,
+                        exclude: /node_modules|antd\.css/,
                         loader: ExtractTextPlugin.extract(
                             Object.assign(
                                 {
@@ -212,6 +213,57 @@ module.exports = {
                                                 sourceMap: shouldUseSourceMap,
                                                 modules: true,
                                                 localIdentName: '[name]__[local]__[hash:base64:5]'
+                                            },
+                                        },
+                                        {
+                                            loader: require.resolve('postcss-loader'),
+                                            options: {
+                                                // Necessary for external CSS imports to work
+                                                // https://github.com/facebookincubator/create-react-app/issues/2677
+                                                ident: 'postcss',
+                                                plugins: () => [
+                                                    require('postcss-flexbugs-fixes'),
+                                                    autoprefixer({
+                                                        browsers: [
+                                                            '>1%',
+                                                            'last 4 versions',
+                                                            'Firefox ESR',
+                                                            'not ie < 9', // React doesn't support IE8 anyway
+                                                        ],
+                                                        flexbox: 'no-2009',
+                                                    }),
+                                                ],
+                                            },
+                                        },
+                                    ],
+                                },
+                                extractTextPluginOptions
+                            )
+                        ),
+                        // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+                    },
+                    // node_modules 和 antd.css，不用 CSS Modules 处理
+                    {
+                        test: /\.css$/,
+                        include: /node_modules|antd\.css/,
+                        loader: ExtractTextPlugin.extract(
+                            Object.assign(
+                                {
+                                    fallback: {
+                                        loader: require.resolve('style-loader'),
+                                        options: {
+                                            hmr: false,
+                                        },
+                                    },
+                                    use: [
+                                        {
+                                            loader: require.resolve('css-loader'),
+                                            options: {
+                                                importLoaders: 1,
+                                                minimize: true,
+                                                sourceMap: shouldUseSourceMap,
+                                                // modules: true,
+                                                // localIdentName: '[name]__[local]__[hash:base64:5]'
                                             },
                                         },
                                         {

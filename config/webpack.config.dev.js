@@ -173,6 +173,7 @@ module.exports = {
                     // in development "style" loader enables hot editing of CSS.
                     {
                         test: /\.css$/,
+                        exclude: /node_modules|antd\.css/,
                         use: [
                             require.resolve('style-loader'),
                             {
@@ -188,6 +189,41 @@ module.exports = {
                                 options: {
                                     // Necessary for external CSS imports to work
                                     // https://github.com/facebookincubator/create-react-app/issues/2677
+                                    ident: 'postcss',
+                                    plugins: () => [
+                                        require('postcss-flexbugs-fixes'),
+                                        autoprefixer({
+                                            browsers: [
+                                                '>1%',
+                                                'last 4 versions',
+                                                'Firefox ESR',
+                                                'not ie < 9', // React doesn't support IE8 anyway
+                                            ],
+                                            flexbox: 'no-2009',
+                                        }),
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                    // node_modules 和 antd.css，不用 CSS Modules 处理
+                    {
+                        test: /\.css$/,
+                        include: /node_modules|antd\.css/,
+                        use: [
+                            require.resolve('style-loader'),
+                            {
+                                loader: require.resolve('css-loader'),
+                                options: {
+                                    importLoaders: 1,
+                                    // 改动
+                                    // modules: true,   // 新增对css modules的支持
+                                    // localIdentName: '[name]__[local]__[hash:base64:5]', //
+                                },
+                            },
+                            {
+                                loader: require.resolve('postcss-loader'),
+                                options: {
                                     ident: 'postcss',
                                     plugins: () => [
                                         require('postcss-flexbugs-fixes'),
